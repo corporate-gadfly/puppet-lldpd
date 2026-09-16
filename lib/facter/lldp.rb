@@ -7,13 +7,13 @@ class MalformedDataError < StandardError; end
 
 Facter.add(:lldp) do
   confine do
-    Facter::Util::Resolution.which('lldpctl')
+    Facter::Core::Execution.which('lldpctl')
   end
 
   setcode do
     fact_data = {}
     begin
-      data = Facter::Util::Resolution.exec('lldpctl -f json')
+      data = Facter::Core::Execution.execute('lldpctl -f json')
       json = JSON.parse(data).fetch('lldp', {}).fetch('interface', [])
       raise MalformedDataError, 'no lldp interface data found' if json.empty?
 

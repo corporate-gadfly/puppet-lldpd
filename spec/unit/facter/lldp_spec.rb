@@ -170,7 +170,7 @@ describe Facter::Util::Fact.to_s do
 
   context 'lldpctl not in path' do
     before do
-      allow(Facter::Util::Resolution).to receive(:which).with('lldpctl').and_return(nil)
+      allow(Facter::Core::Execution).to receive(:which).with('lldpctl').and_return(nil)
     end
 
     it { expect(Facter.fact(:lldp).value).to eq(nil) }
@@ -178,12 +178,12 @@ describe Facter::Util::Fact.to_s do
 
   context 'valid run' do
     before do
-      allow(Facter::Util::Resolution).to receive(:which).with('lldpctl').and_return('/usr/sbin/lldpctl')
+      allow(Facter::Core::Execution).to receive(:which).with('lldpctl').and_return('/usr/sbin/lldpctl')
     end
 
     context 'lldp multiple interfaces' do
       before do
-        allow(Facter::Util::Resolution).to receive(:exec).with('lldpctl -f json') { command_output1 }
+        allow(Facter::Core::Execution).to receive(:execute).with('lldpctl -f json') { command_output1 }
       end
 
       it { expect(Facter.fact(:lldp).value).to eq fact_result1 }
@@ -191,7 +191,7 @@ describe Facter::Util::Fact.to_s do
 
     context 'valid single interface' do # https://github.com/voxpupuli/puppet-lldpd/issues/129
       before do
-        allow(Facter::Util::Resolution).to receive(:exec).with('lldpctl -f json') { command_output2 }
+        allow(Facter::Core::Execution).to receive(:execute).with('lldpctl -f json') { command_output2 }
       end
 
       it { expect(Facter.fact(:lldp).value).to eq fact_result2 }
